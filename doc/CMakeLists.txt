@@ -1,0 +1,5 @@
+find_package(Doxygen REQUIRED)
+
+set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
+
+doxygen_add_docs(doc ${PROJECT_SOURCE_DIR}/README.md ${PROJECT_SOURCE_DIR}/src)
