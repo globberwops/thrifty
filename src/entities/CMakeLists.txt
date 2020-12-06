@@ -4,7 +4,7 @@ add_library(Thrifty::EntityController ALIAS EntityController)
 target_include_directories(EntityController
                            PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>)
 
-target_link_libraries(EntityController PUBLIC units::units
+target_link_libraries(EntityController PUBLIC EnTT::EnTT units::units
                                               spdlog::spdlog_header_only)
 
 target_compile_definitions(EntityController

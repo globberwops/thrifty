@@ -1,8 +1,11 @@
 #include "doctest/doctest.h"
 #include "spdlog/spdlog.h"
+#include "units.h"
 
 #include "entities/EntityController.h"
-#include "entities/IEntity.h"
+#include "entities/Position.h"
+#include "entities/Velocity.h"
+#include <type_traits>
 
 SCENARIO("EntityController does not throw exceptions") // NOLINT
 {
@@ -56,24 +59,43 @@ SCENARIO("EntityController returns Entities") // NOLINT
         {
             THEN("it has no entities")
             {
-                REQUIRE(entityController.GetEntities().empty());
+                REQUIRE(entityController.GetRegistry().size() == 0U);
             }
         }
 
         WHEN("an entity is created")
         {
-            auto entity{entityController.CreateEntity("test")};
-            REQUIRE(entity.use_count() == 2U);
+            auto entity{entityController.CreateEntity()};
 
             THEN("it is added to the list of entities")
             {
-                REQUIRE(entityController.GetEntities().size() == 1U);
-                REQUIRE(entityController.GetEntity(entity->GetId()).use_count() == 3U);
+                REQUIRE(entityController.GetRegistry().size() == 1U);
 
                 AND_THEN("it can be found by its id")
                 {
-                    REQUIRE(entityController.GetEntity(entity->GetId()));
+                    REQUIRE(entityController.GetRegistry().entity(entity) == entity);
                 }
+            }
+
+            THEN("its position and velocity are 0")
+            {
+                using namespace units::literals;
+
+                auto pos = entityController.GetRegistry().get<thrifty::entities::Position>(entity);
+                REQUIRE(pos.x == 0_m);
+                REQUIRE(pos.y == 0_m);
+                REQUIRE(pos.z == 0_m);
+                REQUIRE(pos.h == 0_rad);
+                REQUIRE(pos.p == 0_rad);
+                REQUIRE(pos.r == 0_rad);
+
+                auto vel = entityController.GetRegistry().get<thrifty::entities::Velocity>(entity);
+                REQUIRE(vel.dx == 0_mps);
+                REQUIRE(vel.dy == 0_mps);
+                REQUIRE(vel.dz == 0_mps);
+                REQUIRE(vel.dh == 0_rad_per_s);
+                REQUIRE(vel.dp == 0_rad_per_s);
+                REQUIRE(vel.dr == 0_rad_per_s);
             }
         }
     }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <units.h>
+
 namespace thrifty::entities
 {
 
@@ -9,6 +11,7 @@ struct IRunnable
     virtual void Start() noexcept = 0;
     virtual void Pause() noexcept = 0;
     virtual void Stop() noexcept = 0;
+    virtual void Update(units::time::second_t dt) noexcept = 0;
 
     IRunnable() = default;
     IRunnable(const IRunnable &other) = default;

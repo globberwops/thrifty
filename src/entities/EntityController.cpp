@@ -2,10 +2,12 @@
 #include <memory>    // for std::shared_ptr
 #include <vector>    // for std::vector
 
+#include "entt/entt.hpp"
 #include "spdlog/spdlog.h"
 
-#include "entities/IEntity.h"
 #include "entities/IRunnable.h"
+#include "entities/Position.h"
+#include "entities/Velocity.h"
 
 #include "entities/EntityController.h"
 
@@ -32,18 +34,36 @@ void EntityController::Stop() noexcept
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 }
 
-void EntityController::AddEntity(const std::shared_ptr<IEntity> &entity) noexcept
+void EntityController::Update(units::time::second_t dt) noexcept
 {
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
-    if (mEntities.contains(entity))
-    {
-        spdlog::error("An entity with id '{}' already exists. Ids have to be unique!", entity->GetId());
+    mRegistry.view<Position, Velocity>().each([dt](auto &pos, auto &vel) {
+        pos.x += vel.dx * dt;
+        pos.y += vel.dy * dt;
+        pos.z += vel.dz * dt;
+        pos.h += vel.dh * dt;
+        pos.p += vel.dp * dt;
+        pos.r += vel.dr * dt;
+    });
+}
 
-        return;
-    }
+auto EntityController::GetRegistry() -> entt::registry &
+{
+    SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
-    mEntities.insert(entity);
+    return mRegistry;
+}
+
+auto EntityController::CreateEntity() -> entt::entity
+{
+    SPDLOG_TRACE(__PRETTY_FUNCTION__);
+
+    auto entity = mRegistry.create();
+    mRegistry.emplace<Position>(entity);
+    mRegistry.emplace<Velocity>(entity);
+
+    return entity;
 }
 
 auto EntityController::GetLogger() -> std::shared_ptr<spdlog::logger>
