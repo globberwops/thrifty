@@ -1,4 +1,4 @@
-add_library(EntityController EntityController.cpp)
+add_library(EntityController EntityController.cpp ZeroDynamics.cpp)
 add_library(Thrifty::EntityController ALIAS EntityController)
 
 target_include_directories(EntityController

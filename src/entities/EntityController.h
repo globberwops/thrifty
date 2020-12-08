@@ -1,7 +1,7 @@
 #pragma once
 
-#include "entt/entt.hpp"
-#include "spdlog/spdlog.h"
+#include "entt/entt.hpp"   // for entt::registry
+#include "spdlog/spdlog.h" // for spdlog::logger
 
 #include "entities/IRunnable.h" // for thrifty::entities::IRunnable
 
@@ -20,7 +20,8 @@ class EntityController final : public IRunnable
 
     void Update(units::time::second_t dt) noexcept override;
 
-    [[nodiscard]] auto GetRegistry() -> entt::registry &;
+    auto GetRegistry() -> entt::registry &;
+    auto operator()() -> entt::registry &;
 
     [[nodiscard]] auto CreateEntity() -> entt::entity;
 
