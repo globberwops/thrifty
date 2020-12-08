@@ -8,7 +8,10 @@
 #include "entities/Velocity.h"
 
 using namespace units::literals; // NOLINT(google-build-using-namespace)
+using thrifty::entities::Acceleration;
 using thrifty::entities::EntityController;
+using thrifty::entities::Position;
+using thrifty::entities::Velocity;
 
 SCENARIO("EntityController does not throw exceptions") // NOLINT
 {
@@ -62,7 +65,7 @@ SCENARIO("EntityController returns Entities") // NOLINT
         {
             THEN("it has no entities")
             {
-                REQUIRE(entityController().size() == 0U);
+                REQUIRE(entityController.Registry()->size() == 0U);
             }
         }
 
@@ -72,42 +75,21 @@ SCENARIO("EntityController returns Entities") // NOLINT
 
             THEN("it is added to the list of entities")
             {
-                REQUIRE(entityController().size() == 1U);
+                REQUIRE(entityController.Registry()->size() == 1U);
 
                 AND_THEN("it can be found by its id")
                 {
-                    REQUIRE(entityController().entity(entity) == entity);
+                    REQUIRE(entityController.Registry()->entity(entity) == entity);
                 }
             }
 
             THEN("its position, velocity, and acceleration are 0")
             {
-                using thrifty::entities::Acceleration;
-                using thrifty::entities::Position;
-                using thrifty::entities::Velocity;
+                auto [pos, vel, acc] = entityController.Registry()->get<Position, Velocity, Acceleration>(entity);
 
-                auto [pos, vel, acc] = entityController().get<Position, Velocity, Acceleration>(entity);
-
-                REQUIRE(pos.x == 0_m);
-                REQUIRE(pos.y == 0_m);
-                REQUIRE(pos.z == 0_m);
-                REQUIRE(pos.h == 0_rad);
-                REQUIRE(pos.p == 0_rad);
-                REQUIRE(pos.r == 0_rad);
-
-                REQUIRE(vel.x == 0_mps);
-                REQUIRE(vel.y == 0_mps);
-                REQUIRE(vel.z == 0_mps);
-                REQUIRE(vel.h == 0_rad_per_s);
-                REQUIRE(vel.p == 0_rad_per_s);
-                REQUIRE(vel.r == 0_rad_per_s);
-
-                REQUIRE(acc.x == 0_mps_sq);
-                REQUIRE(acc.y == 0_mps_sq);
-                REQUIRE(acc.z == 0_mps_sq);
-                REQUIRE(acc.h == 0_rad_per_s_sq);
-                REQUIRE(acc.p == 0_rad_per_s_sq);
-                REQUIRE(acc.r == 0_rad_per_s_sq);
+                REQUIRE(pos == Position{});
+                REQUIRE(vel == Velocity{});
+                REQUIRE(acc == Acceleration{});
             }
         }
     }
@@ -121,81 +103,26 @@ TEST_CASE("EntityController can update Entities") // NOLINT
 
     auto entity{entityController.CreateEntity()};
 
-    using thrifty::entities::Acceleration;
-    using thrifty::entities::Position;
-    using thrifty::entities::Velocity;
-
-    auto [pos, vel, acc] = entityController().get<Position, Velocity, Acceleration>(entity);
+    auto [pos, vel, acc] = entityController.Registry()->get<Position, Velocity, Acceleration>(entity);
 
     acc.x = 1_mps_sq;
 
     SUBCASE("updating EntityController updates its entities")
     {
         entityController.Update(1_s);
-        REQUIRE(pos.x == 1_m);
-        REQUIRE(pos.y == 0_m);
-        REQUIRE(pos.z == 0_m);
-        REQUIRE(pos.h == 0_rad);
-        REQUIRE(pos.p == 0_rad);
-        REQUIRE(pos.r == 0_rad);
-
-        REQUIRE(vel.x == 1_mps);
-        REQUIRE(vel.y == 0_mps);
-        REQUIRE(vel.z == 0_mps);
-        REQUIRE(vel.h == 0_rad_per_s);
-        REQUIRE(vel.p == 0_rad_per_s);
-        REQUIRE(vel.r == 0_rad_per_s);
-
-        REQUIRE(acc.x == 1_mps_sq);
-        REQUIRE(acc.y == 0_mps_sq);
-        REQUIRE(acc.z == 0_mps_sq);
-        REQUIRE(acc.h == 0_rad_per_s_sq);
-        REQUIRE(acc.p == 0_rad_per_s_sq);
-        REQUIRE(acc.r == 0_rad_per_s_sq);
+        REQUIRE(pos == Position{1_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == Velocity{1_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc == Acceleration{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
 
         entityController.Update(1_s);
-        REQUIRE(pos.x == 3_m);
-        REQUIRE(pos.y == 0_m);
-        REQUIRE(pos.z == 0_m);
-        REQUIRE(pos.h == 0_rad);
-        REQUIRE(pos.p == 0_rad);
-        REQUIRE(pos.r == 0_rad);
-
-        REQUIRE(vel.x == 2_mps);
-        REQUIRE(vel.y == 0_mps);
-        REQUIRE(vel.z == 0_mps);
-        REQUIRE(vel.h == 0_rad_per_s);
-        REQUIRE(vel.p == 0_rad_per_s);
-        REQUIRE(vel.r == 0_rad_per_s);
-
-        REQUIRE(acc.x == 1_mps_sq);
-        REQUIRE(acc.y == 0_mps_sq);
-        REQUIRE(acc.z == 0_mps_sq);
-        REQUIRE(acc.h == 0_rad_per_s_sq);
-        REQUIRE(acc.p == 0_rad_per_s_sq);
-        REQUIRE(acc.r == 0_rad_per_s_sq);
+        REQUIRE(pos == Position{3_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == Velocity{2_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc == Acceleration{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
 
         entityController.Update(1_s);
-        REQUIRE(pos.x == 6_m);
-        REQUIRE(pos.y == 0_m);
-        REQUIRE(pos.z == 0_m);
-        REQUIRE(pos.h == 0_rad);
-        REQUIRE(pos.p == 0_rad);
-        REQUIRE(pos.r == 0_rad);
-
-        REQUIRE(vel.x == 3_mps);
-        REQUIRE(vel.y == 0_mps);
-        REQUIRE(vel.z == 0_mps);
-        REQUIRE(vel.h == 0_rad_per_s);
-        REQUIRE(vel.p == 0_rad_per_s);
-        REQUIRE(vel.r == 0_rad_per_s);
-
-        REQUIRE(acc.x == 1_mps_sq);
-        REQUIRE(acc.y == 0_mps_sq);
-        REQUIRE(acc.z == 0_mps_sq);
-        REQUIRE(acc.h == 0_rad_per_s_sq);
-        REQUIRE(acc.p == 0_rad_per_s_sq);
-        REQUIRE(acc.r == 0_rad_per_s_sq);
+        REQUIRE(pos == Position{6_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == Velocity{3_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc == Acceleration{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
     }
 }
 
@@ -207,36 +134,16 @@ TEST_CASE("EntityController can update Entities again") // NOLINT
 
     auto entity{entityController.CreateEntity()};
 
-    using thrifty::entities::Acceleration;
-    using thrifty::entities::Position;
-    using thrifty::entities::Velocity;
+    auto [pos, vel, acc] = entityController.Registry()->get<Position, Velocity, Acceleration>(entity);
 
-    auto [pos, vel, acc] = entityController().get<Position, Velocity, Acceleration>(entity);
-
-    vel.x = 100_kph;
+    constexpr auto velocity{100_kph};
+    vel.x = velocity;
 
     SUBCASE("updating EntityController updates its entities")
     {
         entityController.Update(1_hr);
-        REQUIRE(pos.x == 100_km);
-        REQUIRE(pos.y == 0_m);
-        REQUIRE(pos.z == 0_m);
-        REQUIRE(pos.h == 0_rad);
-        REQUIRE(pos.p == 0_rad);
-        REQUIRE(pos.r == 0_rad);
-
-        REQUIRE(vel.x == 100_kph);
-        REQUIRE(vel.y == 0_mps);
-        REQUIRE(vel.z == 0_mps);
-        REQUIRE(vel.h == 0_rad_per_s);
-        REQUIRE(vel.p == 0_rad_per_s);
-        REQUIRE(vel.r == 0_rad_per_s);
-
-        REQUIRE(acc.x == 0_mps_sq);
-        REQUIRE(acc.y == 0_mps_sq);
-        REQUIRE(acc.z == 0_mps_sq);
-        REQUIRE(acc.h == 0_rad_per_s_sq);
-        REQUIRE(acc.p == 0_rad_per_s_sq);
-        REQUIRE(acc.r == 0_rad_per_s_sq);
+        REQUIRE(pos == Position{100_km, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == Velocity{100_kph, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc == Acceleration{0_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
     }
 }

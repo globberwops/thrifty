@@ -1,3 +1,5 @@
+#include <memory> // for std::shared_ptr
+
 #include "entt/entt.hpp"   // for entt::registry
 #include "spdlog/spdlog.h" // for spdlog::logger
 
@@ -52,17 +54,10 @@ void EntityController::Update(units::time::second_t dt) noexcept
         return;
     }
 
-    mRegistry.view<ZeroDynamics>().each([this, dt](auto entity, auto &dyn) { dyn.Update(dt, mRegistry, entity); });
+    mRegistry->view<ZeroDynamics>().each([this, dt](auto entity, auto &dyn) { dyn.Update(dt, mRegistry, entity); });
 }
 
-auto EntityController::GetRegistry() -> entt::registry &
-{
-    SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    return mRegistry;
-}
-
-auto EntityController::operator()() -> entt::registry &
+auto EntityController::Registry() -> std::shared_ptr<entt::registry>
 {
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
@@ -73,11 +68,11 @@ auto EntityController::CreateEntity() -> entt::entity
 {
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
-    auto entity = mRegistry.create();
-    mRegistry.emplace<Position>(entity);
-    mRegistry.emplace<Velocity>(entity);
-    mRegistry.emplace<Acceleration>(entity);
-    mRegistry.emplace<ZeroDynamics>(entity);
+    auto entity = mRegistry->create();
+    mRegistry->emplace<Position>(entity);
+    mRegistry->emplace<Velocity>(entity);
+    mRegistry->emplace<Acceleration>(entity);
+    mRegistry->emplace<ZeroDynamics>(entity);
 
     return entity;
 }
@@ -87,6 +82,10 @@ auto EntityController::GetLogger() -> std::shared_ptr<spdlog::logger>
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
     return spdlog::default_logger();
+}
+
+EntityController::EntityController() : mRegistry(std::make_shared<entt::registry>())
+{
 }
 
 } // namespace thrifty::entities

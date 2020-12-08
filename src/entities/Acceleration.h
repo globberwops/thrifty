@@ -48,4 +48,11 @@ constexpr auto operator!=(const Acceleration lhs, const Acceleration rhs) -> boo
 {
     return !(lhs == rhs);
 }
+
+inline auto operator<<(std::ostream &os, const Acceleration &acc) -> std::ostream &
+{
+    os << "Acceleration ( x=" << acc.x << ", y=" << acc.y << ", z=" << acc.z << ", h=" << acc.h << ", p=" << acc.p
+       << ", r=" << acc.r << " )";
+    return os;
+}
 } // namespace thrifty::entities

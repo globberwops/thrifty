@@ -11,11 +11,12 @@
 namespace thrifty::entities
 {
 
-void ZeroDynamics::Update(units::time::second_t dt, entt::registry &registry, entt::entity entity) noexcept
+void ZeroDynamics::Update(units::time::second_t dt, std::shared_ptr<entt::registry> registry,
+                          entt::entity entity) noexcept
 {
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
-    auto [pos, vel, acc] = registry.get<Position, Velocity, Acceleration>(entity);
+    auto [pos, vel, acc] = registry->get<Position, Velocity, Acceleration>(entity);
 
     vel += acc * dt;
     pos += vel * dt;

@@ -10,7 +10,8 @@ namespace thrifty::entities
 
 struct ZeroDynamics : IDynamics
 {
-    void Update(units::time::second_t dt, entt::registry &registry, entt::entity entity) noexcept override;
+    void Update(units::time::second_t dt, std::shared_ptr<entt::registry> registry,
+                entt::entity entity) noexcept override;
 
     ZeroDynamics() = default;
     ZeroDynamics(const ZeroDynamics &other) = default;

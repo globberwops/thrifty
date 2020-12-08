@@ -47,4 +47,11 @@ inline auto distance(const Position a, const Position b) -> units::length::meter
     const auto dz = a.z - b.z;
     return units::math::sqrt(dx * dx + dy * dy + dz * dz);
 }
+
+inline auto operator<<(std::ostream &os, const Position &pos) -> std::ostream &
+{
+    os << "Position ( x=" << pos.x << ", y=" << pos.y << ", z=" << pos.z << ", h=" << pos.h << ", p=" << pos.p
+       << ", r=" << pos.r << " )";
+    return os;
+}
 } // namespace thrifty::entities

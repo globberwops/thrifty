@@ -9,7 +9,8 @@ namespace thrifty::entities
 class IDynamics
 {
   public:
-    virtual void Update(units::time::second_t dt, entt::registry &registry, entt::entity entity) noexcept = 0;
+    virtual void Update(units::time::second_t dt, std::shared_ptr<entt::registry> registry,
+                        entt::entity entity) noexcept = 0;
 
     IDynamics() = default;
     IDynamics(const IDynamics &other) = default;

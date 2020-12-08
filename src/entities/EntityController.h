@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory> // for std::shared_ptr
+
+#include "entt/entity/fwd.hpp"
 #include "entt/entt.hpp"   // for entt::registry
 #include "spdlog/spdlog.h" // for spdlog::logger
 
@@ -10,7 +13,7 @@ namespace thrifty::entities
 
 class EntityController final : public IRunnable
 {
-    entt::registry mRegistry;
+    std::shared_ptr<entt::registry> mRegistry;
 
   public:
     void Init() noexcept override;
@@ -20,19 +23,18 @@ class EntityController final : public IRunnable
 
     void Update(units::time::second_t dt) noexcept override;
 
-    auto GetRegistry() -> entt::registry &;
-    auto operator()() -> entt::registry &;
+    auto Registry() -> std::shared_ptr<entt::registry>;
 
     [[nodiscard]] auto CreateEntity() -> entt::entity;
 
     static auto GetLogger() -> std::shared_ptr<spdlog::logger>;
 
-    EntityController() = default;
+    EntityController();
+    EntityController(EntityController &&other) = default;
+    EntityController(const EntityController &other) = default;
+    auto operator=(EntityController &&other) -> EntityController & = default;
+    auto operator=(const EntityController &other) -> EntityController & = default;
     ~EntityController() override = default;
-    EntityController(EntityController &&other) noexcept = default;
-    EntityController(const EntityController &other) = delete;
-    auto operator=(EntityController &&other) noexcept -> EntityController & = default;
-    auto operator=(const EntityController &other) -> EntityController & = delete;
 };
 
 } // namespace thrifty::entities
