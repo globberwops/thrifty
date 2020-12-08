@@ -1,5 +1,7 @@
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+unset(BUILD_TESTING)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -40,3 +42,10 @@ FetchContent_MakeAvailable(nholthaus_units)
 if(NOT TARGET units::units)
   add_library(units::units ALIAS units)
 endif()
+
+FetchContent_Declare(
+  skypjack_entt
+  GIT_REPOSITORY https://github.com/skypjack/entt.git
+  GIT_TAG master)
+set(ENTT_BUILD_TESTING OFF)
+FetchContent_MakeAvailable(skypjack_entt)

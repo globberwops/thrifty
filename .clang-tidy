@@ -17,6 +17,8 @@ CheckOptions:
     value: "CamelCase"
   - key: readability-identifier-naming.MemberPrefix
     value: "m"
+  - key: readability-identifier-naming.MemberIgnoredRegexp # for clang-tidy-12
+    value: "[xyzhpr]"
   - key: readability-identifier-naming.ConstantCase
     value: "CamelCase"
   - key: readability-identifier-naming.ConstantPrefix
@@ -31,3 +33,7 @@ CheckOptions:
     value: "camelBack"
   - key: readability-identifier-naming.MacroDefinitionCase
     value: "UPPER_CASE"
+  - key: readability-identifier-naming.ConstantParameterCase
+    value: "camelBack"
+  - key: readability-identifier-naming.LocalConstantCase
+    value: "camelBack"
