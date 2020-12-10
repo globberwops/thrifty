@@ -1,5 +1,5 @@
 add_executable(ThriftyTest ThriftyTest.cpp EntityControllerTest.cpp
-                           PositionTest.cpp)
+                           SixDoFTest.cpp)
 # $<$<CONFIG:Debug>:alloc_dbg.cpp>)
 
 target_link_libraries(

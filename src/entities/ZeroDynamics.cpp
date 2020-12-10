@@ -13,13 +13,10 @@
 
 #include "entt/entt.hpp"   // for entt::registry
 #include "spdlog/spdlog.h" // for spdlog::logger
-#include "units.h"         // for units::time::second_t
 
 #include <memory> // for std::weak_ptr
 
-#include "entities/Acceleration.h" // for thrifty::entities::Acceleration
-#include "entities/Position.h"     // for thrifty::entities::Position
-#include "entities/Velocity.h"     // for thrifty::entities::Velocity
+#include "entities/SixDoF.h"
 
 #include "entities/ZeroDynamics.h"
 
@@ -33,7 +30,7 @@ void ZeroDynamics::Update(units::time::second_t dt, std::weak_ptr<entt::registry
 
     if (auto reg = registry.lock())
     {
-        auto [pos, vel, acc] = reg->get<Position, Velocity, Acceleration>(entity);
+        auto [pos, vel, acc] = reg->get<Position_t, Velocity_t, Acceleration_t>(entity);
 
         vel += acc * dt;
         pos += vel * dt;

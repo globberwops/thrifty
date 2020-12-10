@@ -13,12 +13,11 @@
 
 #include "entt/entt.hpp"   // for entt::registry
 #include "spdlog/spdlog.h" // for spdlog::logger
+#include "units.h"
 
 #include <memory> // for std::shared_ptr
 
-#include "entities/Acceleration.h" // for thrifty::entities::Acceleration
-#include "entities/Position.h"     // for thrifty::entities::Position
-#include "entities/Velocity.h"     // for thrifty::entities::Velocity
+#include "entities/SixDoF.h"       // for thrifty::entities::SixDoF
 #include "entities/ZeroDynamics.h" // for thrifty::entities::ZeroDynamics
 
 #include "entities/IRunnable.h" // for thrifty::entities::IRunnable
@@ -47,9 +46,9 @@ auto EntityController::CreateEntity() -> entt::entity
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
 
     auto entity = mRegistry->create();
-    mRegistry->emplace<Position>(entity);
-    mRegistry->emplace<Velocity>(entity);
-    mRegistry->emplace<Acceleration>(entity);
+    mRegistry->emplace<Position_t>(entity);
+    mRegistry->emplace<Velocity_t>(entity);
+    mRegistry->emplace<Acceleration_t>(entity);
     mRegistry->emplace<ZeroDynamics>(entity);
 
     return entity;
