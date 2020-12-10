@@ -1,4 +1,5 @@
 #include "doctest/doctest.h"
+#include "entt/entt.hpp"
 #include "spdlog/spdlog.h"
 #include "units.h"
 
@@ -12,48 +13,6 @@ using thrifty::entities::Acceleration;
 using thrifty::entities::EntityController;
 using thrifty::entities::Position;
 using thrifty::entities::Velocity;
-
-SCENARIO("EntityController does not throw exceptions") // NOLINT
-{
-    EntityController::GetLogger()->set_level(spdlog::level::trace);
-
-    GIVEN("An EntityController")
-    {
-        EntityController entityController;
-
-        WHEN("it is initialized")
-        {
-            THEN("it does not throw an exception")
-            {
-                REQUIRE_NOTHROW(entityController.Init());
-            }
-        }
-
-        WHEN("it is started")
-        {
-            THEN("it does not throw an exception")
-            {
-                REQUIRE_NOTHROW(entityController.Start());
-            }
-        }
-
-        WHEN("it is paused")
-        {
-            THEN("it does not throw an exception")
-            {
-                REQUIRE_NOTHROW(entityController.Pause());
-            }
-        }
-
-        WHEN("it is stopped")
-        {
-            THEN("it does not throw an exception")
-            {
-                REQUIRE_NOTHROW(entityController.Stop());
-            }
-        }
-    }
-}
 
 SCENARIO("EntityController returns Entities") // NOLINT
 {
@@ -98,8 +57,6 @@ SCENARIO("EntityController returns Entities") // NOLINT
 TEST_CASE("EntityController can update Entities") // NOLINT
 {
     EntityController entityController;
-    entityController.Init();
-    entityController.Start();
 
     auto entity{entityController.CreateEntity()};
 
@@ -129,8 +86,6 @@ TEST_CASE("EntityController can update Entities") // NOLINT
 TEST_CASE("EntityController can update Entities again") // NOLINT
 {
     EntityController entityController;
-    entityController.Init();
-    entityController.Start();
 
     auto entity{entityController.CreateEntity()};
 

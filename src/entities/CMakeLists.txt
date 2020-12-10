@@ -9,3 +9,5 @@ target_link_libraries(EntityController PUBLIC EnTT::EnTT units::units
 
 target_compile_definitions(EntityController
                            PUBLIC $<$<CONFIG:Debug>:SPDLOG_ACTIVE_LEVEL=0>)
+
+target_precompile_headers(EntityController PUBLIC entities_pch.h)

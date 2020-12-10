@@ -1,4 +1,19 @@
+//===-- entities/Position.h - Position struct definition --------*- C++ -*-===//
+//
+// Part of the Thrifty Project, under the Boost Software License 1.0.
+// See the https://opensource.org/licenses/BSL-1.0 for license information.
+// SPDX-License-Identifier: BSL-1.0
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the Position struct.
+///
+//===----------------------------------------------------------------------===//
+
 #pragma once
+#ifndef THRIFTY_ENTITIES_POSITION_H
+#define THRIFTY_ENTITIES_POSITION_H
 
 #include "units.h"
 
@@ -25,9 +40,29 @@ constexpr auto operator-(const Position lhs, const Position rhs) -> Position
     return {lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z, lhs.h - rhs.h, lhs.p - rhs.p, lhs.r - rhs.r};
 }
 
+constexpr auto operator-=(Position &lhs, const Position rhs) -> Position &
+{
+    return lhs = lhs - rhs;
+}
+
 constexpr auto operator*(const Position lhs, const double rhs) -> Position
 {
     return {lhs.x * rhs, lhs.y * rhs, lhs.z * rhs, lhs.h * rhs, lhs.p * rhs, lhs.r * rhs};
+}
+
+constexpr auto operator*=(Position &lhs, const double rhs) -> Position &
+{
+    return lhs = lhs * rhs;
+}
+
+constexpr auto operator/(const Position lhs, const double rhs) -> Position
+{
+    return {lhs.x / rhs, lhs.y / rhs, lhs.z / rhs, lhs.h / rhs, lhs.p / rhs, lhs.r / rhs};
+}
+
+constexpr auto operator/=(Position &lhs, const double rhs) -> Position &
+{
+    return lhs = lhs / rhs;
 }
 
 constexpr auto operator==(const Position lhs, const Position rhs) -> bool
@@ -55,3 +90,5 @@ inline auto operator<<(std::ostream &os, const Position &pos) -> std::ostream &
     return os;
 }
 } // namespace thrifty::entities
+
+#endif // THRIFTY_ENTITIES_POSITION_H

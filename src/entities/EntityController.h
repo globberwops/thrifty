@@ -1,10 +1,24 @@
+//===-- entities/EntityController.h - EntityController class ----*- C++ -*-===//
+//
+// Part of the Thrifty Project, under the Boost Software License 1.0.
+// See the https://opensource.org/licenses/BSL-1.0 for license information.
+// SPDX-License-Identifier: BSL-1.0
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the EntityController class.
+///
+//===----------------------------------------------------------------------===//
+
 #pragma once
+#ifndef THRIFTY_ENTITIES_ENTITY_CONTROLLER_H
+#define THRIFTY_ENTITIES_ENTITY_CONTROLLER_H
+
+#include "entt/entity/fwd.hpp" // for entt::registry
+#include "spdlog/spdlog.h"     // for spdlog::logger
 
 #include <memory> // for std::shared_ptr
-
-#include "entt/entity/fwd.hpp"
-#include "entt/entt.hpp"   // for entt::registry
-#include "spdlog/spdlog.h" // for spdlog::logger
 
 #include "entities/IRunnable.h" // for thrifty::entities::IRunnable
 
@@ -16,11 +30,6 @@ class EntityController final : public IRunnable
     std::shared_ptr<entt::registry> mRegistry;
 
   public:
-    void Init() noexcept override;
-    void Start() noexcept override;
-    void Pause() noexcept override;
-    void Stop() noexcept override;
-
     void Update(units::time::second_t dt) noexcept override;
 
     auto Registry() -> std::shared_ptr<entt::registry>;
@@ -38,3 +47,5 @@ class EntityController final : public IRunnable
 };
 
 } // namespace thrifty::entities
+
+#endif // THRIFTY_ENTITIES_ENTITY_CONTROLLER_H

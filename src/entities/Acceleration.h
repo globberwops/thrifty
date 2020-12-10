@@ -1,4 +1,19 @@
+//===-- entities/Position.h - Position struct definition --------*- C++ -*-===//
+//
+// Part of the Thrifty Project, under the Boost Software License 1.0.
+// See the https://opensource.org/licenses/BSL-1.0 for license information.
+// SPDX-License-Identifier: BSL-1.0
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the declaration of the Position struct.
+///
+//===----------------------------------------------------------------------===//
+
 #pragma once
+#ifndef THRIFTY_ENTITIES_ACCELERATION_H
+#define THRIFTY_ENTITIES_ACCELERATION_H
 
 #include "units.h"
 
@@ -56,3 +71,5 @@ inline auto operator<<(std::ostream &os, const Acceleration &acc) -> std::ostrea
     return os;
 }
 } // namespace thrifty::entities
+
+#endif // THRIFTY_ENTITIES_ACCELERATION_H

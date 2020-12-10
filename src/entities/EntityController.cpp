@@ -1,7 +1,20 @@
-#include <memory> // for std::shared_ptr
+//===-- entities/EntityController.cpp - EntityController class ------------===//
+//
+// Part of the Thrifty Project, under the Boost Software License 1.0.
+// See the https://opensource.org/licenses/BSL-1.0 for license information.
+// SPDX-License-Identifier: BSL-1.0
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// This file contains the definition of the EntityController class.
+///
+//===----------------------------------------------------------------------===//
 
 #include "entt/entt.hpp"   // for entt::registry
 #include "spdlog/spdlog.h" // for spdlog::logger
+
+#include <memory> // for std::shared_ptr
 
 #include "entities/Acceleration.h" // for thrifty::entities::Acceleration
 #include "entities/Position.h"     // for thrifty::entities::Position
@@ -15,44 +28,9 @@
 namespace thrifty::entities
 {
 
-using RunState = IRunnable::RunState;
-
-void EntityController::Init() noexcept
-{
-    SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    SetRunState(RunState::kInitialized);
-}
-
-void EntityController::Start() noexcept
-{
-    SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    SetRunState(RunState::kStarted);
-}
-
-void EntityController::Pause() noexcept
-{
-    SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    SetRunState(RunState::kPaused);
-}
-
-void EntityController::Stop() noexcept
-{
-    SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    SetRunState(RunState::kStopped);
-}
-
 void EntityController::Update(units::time::second_t dt) noexcept
 {
     SPDLOG_TRACE(__PRETTY_FUNCTION__);
-
-    if (GetRunState() != RunState::kStarted)
-    {
-        return;
-    }
 
     mRegistry->view<ZeroDynamics>().each([this, dt](auto entity, auto &dyn) { dyn.Update(dt, mRegistry, entity); });
 }
