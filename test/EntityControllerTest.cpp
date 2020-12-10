@@ -4,13 +4,13 @@
 #include "units.h"
 
 #include "entities/EntityController.h"
-#include "entities/SixDoF.h"
+#include "units/Units.h"
 
 using namespace units::literals; // NOLINT(google-build-using-namespace)
-using thrifty::entities::Acceleration_t;
 using thrifty::entities::EntityController;
-using thrifty::entities::Position_t;
-using thrifty::entities::Velocity_t;
+using thrifty::units::acceleration_sixdof_t;
+using thrifty::units::position_sixdof_t;
+using thrifty::units::velocity_sixdof_t;
 
 SCENARIO("EntityController returns Entities") // NOLINT
 {
@@ -42,11 +42,13 @@ SCENARIO("EntityController returns Entities") // NOLINT
 
             THEN("its position, velocity, and acceleration are 0")
             {
-                auto [pos, vel, acc] = entityController.Registry()->get<Position_t, Velocity_t, Acceleration_t>(entity);
+                auto [pos, vel, acc] =
+                    entityController.Registry()->get<position_sixdof_t, velocity_sixdof_t, acceleration_sixdof_t>(
+                        entity);
 
-                REQUIRE(pos == Position_t{});
-                REQUIRE(vel == Velocity_t{});
-                REQUIRE(acc == Acceleration_t{});
+                REQUIRE(pos == position_sixdof_t{});
+                REQUIRE(vel == velocity_sixdof_t{});
+                REQUIRE(acc == acceleration_sixdof_t{});
             }
         }
     }
@@ -58,26 +60,30 @@ TEST_CASE("EntityController can update Entities") // NOLINT
 
     auto entity{entityController.CreateEntity()};
 
-    auto [pos, vel, acc] = entityController.Registry()->get<Position_t, Velocity_t, Acceleration_t>(entity);
+    auto [pos, vel, acc] =
+        entityController.Registry()->get<position_sixdof_t, velocity_sixdof_t, acceleration_sixdof_t>(entity);
 
     acc.x = 1_mps_sq;
 
     SUBCASE("updating EntityController updates its entities")
     {
-        entityController.Update(1_s);
-        REQUIRE(pos == Position_t{1_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
-        REQUIRE(vel == Velocity_t{1_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
-        REQUIRE(acc == Acceleration_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
+        entityController.Update(1_s, nullptr, ::entt::null);
+        REQUIRE(pos == position_sixdof_t{1_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == velocity_sixdof_t{1_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc ==
+                acceleration_sixdof_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
 
-        entityController.Update(1_s);
-        REQUIRE(pos == Position_t{3_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
-        REQUIRE(vel == Velocity_t{2_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
-        REQUIRE(acc == Acceleration_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
+        entityController.Update(1_s, nullptr, ::entt::null);
+        REQUIRE(pos == position_sixdof_t{3_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == velocity_sixdof_t{2_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc ==
+                acceleration_sixdof_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
 
-        entityController.Update(1_s);
-        REQUIRE(pos == Position_t{6_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
-        REQUIRE(vel == Velocity_t{3_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
-        REQUIRE(acc == Acceleration_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
+        entityController.Update(1_s, nullptr, ::entt::null);
+        REQUIRE(pos == position_sixdof_t{6_m, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == velocity_sixdof_t{3_mps, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc ==
+                acceleration_sixdof_t{1_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
     }
 }
 
@@ -87,16 +93,18 @@ TEST_CASE("EntityController can update Entities again") // NOLINT
 
     auto entity{entityController.CreateEntity()};
 
-    auto [pos, vel, acc] = entityController.Registry()->get<Position_t, Velocity_t, Acceleration_t>(entity);
+    auto [pos, vel, acc] =
+        entityController.Registry()->get<position_sixdof_t, velocity_sixdof_t, acceleration_sixdof_t>(entity);
 
     constexpr auto velocity{100_kph};
     vel.x = velocity;
 
     SUBCASE("updating EntityController updates its entities")
     {
-        entityController.Update(1_hr);
-        REQUIRE(pos == Position_t{100_km, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
-        REQUIRE(vel == Velocity_t{100_kph, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
-        REQUIRE(acc == Acceleration_t{0_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
+        entityController.Update(1_hr, nullptr, ::entt::null);
+        REQUIRE(pos == position_sixdof_t{100_km, 0_m, 0_m, 0_rad, 0_rad, 0_rad});
+        REQUIRE(vel == velocity_sixdof_t{100_kph, 0_mps, 0_mps, 0_rad_per_s, 0_rad_per_s, 0_rad_per_s});
+        REQUIRE(acc ==
+                acceleration_sixdof_t{0_mps_sq, 0_mps_sq, 0_mps_sq, 0_rad_per_s_sq, 0_rad_per_s_sq, 0_rad_per_s_sq});
     }
 }

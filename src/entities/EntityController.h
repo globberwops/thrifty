@@ -1,40 +1,29 @@
-//===-- entities/EntityController.h - EntityController class ----*- C++ -*-===//
-//
-// Part of the Thrifty Project, under the Boost Software License 1.0.
-// See the https://opensource.org/licenses/BSL-1.0 for license information.
-// SPDX-License-Identifier: BSL-1.0
-//
-//===----------------------------------------------------------------------===//
-///
-/// \file
-/// This file contains the declaration of the EntityController class.
-///
-//===----------------------------------------------------------------------===//
 
 #pragma once
-#ifndef THRIFTY_ENTITIES_ENTITY_CONTROLLER_H
-#define THRIFTY_ENTITIES_ENTITY_CONTROLLER_H
 
-#include "entt/entity/fwd.hpp" // for entt::registry
-#include "spdlog/spdlog.h"     // for spdlog::logger
+#include "entt/entity/fwd.hpp"
+#include "spdlog/spdlog.h"
 
-#include <memory> // for std::shared_ptr
+#include <memory>
 
-#include "entities/IRunnable.h" // for thrifty::entities::IRunnable
+#include "interfaces/IRunnable.h"
+#include "units/Units.h"
 
 namespace thrifty::entities
 {
+using registry_t = entt::registry;
+using entity_t = entt::entity;
 
-class EntityController final : public IRunnable
+class EntityController final : public interfaces::IRunnable<units::time_t, registry_t, entity_t>
 {
-    std::shared_ptr<entt::registry> mRegistry;
+    std::shared_ptr<registry_t> mRegistry;
 
   public:
-    void Update(units::time::second_t dt) noexcept override;
+    void Update(units::time_t dt, std::shared_ptr<registry_t> registry, entity_t entity) noexcept override;
 
-    auto Registry() -> std::shared_ptr<entt::registry>;
+    auto Registry() -> std::shared_ptr<registry_t>;
 
-    [[nodiscard]] auto CreateEntity() -> entt::entity;
+    [[nodiscard]] auto CreateEntity() -> entity_t;
 
     static auto GetLogger() -> std::shared_ptr<spdlog::logger>;
 
@@ -47,5 +36,3 @@ class EntityController final : public IRunnable
 };
 
 } // namespace thrifty::entities
-
-#endif // THRIFTY_ENTITIES_ENTITY_CONTROLLER_H

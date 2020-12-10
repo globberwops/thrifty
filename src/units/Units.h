@@ -10,7 +10,7 @@ UNIT_ADD(angular_acceleration, radians_per_second_squared, radians_per_second_sq
          compound_unit<units::angle::radians, inverse<squared<units::time::seconds>>>)
 } // namespace units
 
-namespace thrifty::entities
+namespace thrifty::units
 {
 
 template <typename Length, typename Angle> //
@@ -70,7 +70,7 @@ template <typename Length, typename Angle, typename Divisor> //
 constexpr auto operator/=(SixDoF<Length, Angle> &lhs, const Divisor rhs)
     -> SixDoF<decltype(lhs.x / rhs), decltype(lhs.h / rhs)>
 {
-    static_assert(std::is_arithmetic_v<Divisor>, "Multiplicand is not an arithmetic type");
+    static_assert(std::is_arithmetic_v<Divisor>, "Divisor is not an arithmetic type");
 
     return lhs = lhs / rhs;
 }
@@ -93,7 +93,7 @@ inline auto distance(const SixDoF<Length, Angle> a, const SixDoF<Length, Angle> 
     const auto dx = a.x - b.x;
     const auto dy = a.y - b.y;
     const auto dz = a.z - b.z;
-    return units::math::sqrt(dx * dx + dy * dy + dz * dz); // TODO(globberwops): Do not depend on units lib
+    return ::units::math::sqrt(dx * dx + dy * dy + dz * dz); // TODO(globberwops): Do not depend on units lib
 }
 
 template <typename Length, typename Angle> //
@@ -104,9 +104,11 @@ inline auto operator<<(std::ostream &os, const SixDoF<Length, Angle> &a) -> std:
     return os;
 }
 
-using Position_t = SixDoF<units::length::meter_t, units::angle::radian_t>;
-using Velocity_t = SixDoF<units::velocity::meters_per_second_t, units::angular_velocity::radians_per_second_t>;
-using Acceleration_t =
-    SixDoF<units::acceleration::meters_per_second_squared_t, units::angular_acceleration::radians_per_second_squared_t>;
+using time_t = ::units::time::second_t;
+using position_sixdof_t = SixDoF<::units::length::meter_t, ::units::angle::radian_t>;
+using velocity_sixdof_t =
+    SixDoF<::units::velocity::meters_per_second_t, ::units::angular_velocity::radians_per_second_t>;
+using acceleration_sixdof_t = SixDoF<::units::acceleration::meters_per_second_squared_t,
+                                     ::units::angular_acceleration::radians_per_second_squared_t>;
 
-} // namespace thrifty::entities
+} // namespace thrifty::units
